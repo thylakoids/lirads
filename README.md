@@ -4,11 +4,21 @@ install [nodejs](https://nodejs.org/en/) and [Angular CLI](https://github.com/an
 
 ## Test install successful or not?
 ng help
+
 ng -v
 
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+
+## SDK
+
+integrate [bootstrap 4](http://tutorialsdojo.com/blog/2017/03/03/intro-bootstrap-4-integrating-bootstrap-4-angular-cli-angular-tutorial/)
+
+[internationality](https://github.com/ngx-translate/core)
+
+
+
 
 ## Code scaffolding
 
