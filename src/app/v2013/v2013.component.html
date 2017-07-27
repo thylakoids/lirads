@@ -1,0 +1,233 @@
+<form [formGroup]="liradsForm" (ngSubmit)="onSubmit(liradsForm.value)">
+	<div class="form-group row">
+		<div class="col-xl-3 col-md form-inline">
+			<label class="col-form-label mr-2">{{'PAITIENT_ID' | translate}}</label>
+			<p class="form-control-static">{{ patientID }}</p>
+		</div>
+		<div class="col-xl-4 col-md form-inline">
+			<label for="modalityCurrentStudy" class="col-form-label mr-2">{{'MODALITY_CURRENT_STUDY' | translate }}</label>
+			<p id="modalityCurrentStudy" class="form-control-static">{{ modalityCurrentStudy }}</p>
+		</div>
+		<div class="col-xl-5 form-inline d-flex">
+				<label for="currentStudyDate" class="col-form-label mr-2">{{'DATE_CURRENT_STUDY' | translate}}</label>
+				<div class="input-group div-flexitem">
+					<input id="currentStudyDate" class="form-control" placeholder="yyyy-mm-dd"
+					name="dp" [formControl]="date" ngbDatepicker #currentD="ngbDatepicker">
+					<div class="input-group-addon" (click)="currentD.toggle()" >
+						<img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+					</div>
+				</div>
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<div class="col-xl-3 col-md form-inline">
+				<label for="priorStudy" class="col-form-label mr-2">{{'PRIOR_STUDY' | translate}}</label>
+				<label class="form-check-label" *ngFor="let p of priorStudyRadios; let i=index" [ngClass]="{'mr-3': i!=priorStudyRadios.length-1}">
+					<input class="form-check-input" type="radio" name="priorStudy" [checked]="priorStudy.value==p.value" [formControl]="priorStudy" value="{{ p.value }}"> {{ p.description | translate}}
+				</label>
+		</div>
+		<div class="col-xl-4 col-md form-inline" *ngIf="isPriorStudy()">
+				<label for="priorStudy" class="col-form-label mr-2">{{'MODALITY_PRIOR_STUDY' | translate}}</label>
+				<label class="form-check-label" *ngFor="let p of modalityPriorStudyRadios; let i=index" [ngClass]="{'mr-3': i!=modalityPriorStudyRadios.length-1}">
+					<input class="form-check-input" type="radio" name="modalityPriorStudy" [checked]="modalityPriorStudy.value==p.value" [formControl]="modalityPriorStudy" value="{{ p.value }}"> {{ p.description | translate}}
+				</label>
+		</div>
+		<div class="col-xl-5 form-inline d-flex" *ngIf="isPriorStudy()">
+				<label for="priorStudyDate" class="col-form-label mr-2">{{'DATE_PRIOR_STUDY' | translate}}</label>
+				<div class="input-group div-flexitem" [ngClass]="{'has-danger': !datePriorStudy.valid}" ngbTooltip="{{'INPUT_REQUIRE' | translate}}">
+					<input id="priorStudyDate" class="form-control" placeholder="yyyy-mm-dd"
+					name="dp" [formControl]="datePriorStudy" ngbDatepicker #priorD="ngbDatepicker">
+					<div class="input-group-addon" (click)="priorD.toggle()" >
+						<img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+					</div>
+				</div>
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<div class="col-lg form-inline d-flex">
+				<label for="observationNumber" class="col-form-label mr-2">{{'OBSERVATION_NUMBER' | translate}}</label>
+				<input type="number" class="form-control div-flexitem" id="observationNumber" [formControl]="observationNumber">	  			
+		</div>
+		<div class="col-lg form-inline d-flex">
+				<label for="diameterCurrentStudy" class="col-form-label mr-2">{{'DIAMETER_CURRENT_STUDY' | translate}}</label>
+				<input type="number" class="form-control div-flexitem" id="diameterCurrentStudy"  [formControl]="diameter"  ngbTooltip="{{'INPUT_REQUIRE' | translate}}">
+		</div>
+	</div>
+
+	<div class="form-group form-inline">
+		<label class="col-form-label mr-2">{{'SEGMENTS' | translate}}</label>
+		<label class="form-check-label" *ngFor="let s of segments.controls; let i=index" [ngClass]="{'mr-3': i!=segments.controls.length-1}">
+			<input class="form-check-input" type="checkbox" [formControl]="s"> {{ segmentsCheckboxs[i].description }}
+		</label>
+	</div>
+
+	<div class="form-group row" *ngIf="isPriorStudy()">
+		<div class="col-lg form-inline">
+				<label class="col-form-label mr-2">{{'OBSERVATION_SEEN_PRIOR_STUDY' | translate}}</label>
+				<label class="form-check-label" *ngFor="let p of priorStudyRadios; let i=index" [ngClass]="{'mr-3': i!=priorStudyRadios.length-1}">
+					<input class="form-check-input" type="radio" name="isSeenPriorStudy" [checked]="isSeenPriorStudy.value==p.value" [formControl]="isSeenPriorStudy" value="{{ p.value }}"> {{ p.description | translate}}
+				</label>
+		</div>
+		<div class="col-lg form-inline d-flex" *ngIf="isSeenPriorStudyEqualToYes()">
+				<label for="diameterPriorStudy" class="col-form-label mr-2">{{'DIAMETER_PRIOR_STUDY' | translate}}</label>
+				<div class="div-flexitem" [ngClass]="{'has-danger': !diameterPriorStudy.valid}"  ngbTooltip="{{'INPUT_REQUIRE' | translate}}">
+					<input type="number" class="form-control w-100" id="diameterPriorStudy" [formControl]="diameterPriorStudy" >	 
+				</div>
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<div class="col-lg form-inline">
+				<label class="col-form-label mr-2">{{'OBSERVATION_TYPE' | translate}}</label>
+				<label class="form-check-label" *ngFor="let p of observationTypeRadios; let i=index" [ngClass]="{'mr-3': i!=observationTypeRadios.length-1}">
+					<input class="form-check-input" type="radio" name="observationType" [checked]="observationType.value==p.value" [formControl]="observationType" value="{{ p.value }}"> {{ p.description | translate}}
+				</label>
+		</div>
+		<div class="col-lg form-inline d-flex" *ngIf="isObservationTypeEqualToMass()">
+				<label for="whichMass" class="col-form-label mr-2">{{'WHICH_MASS' | translate}}</label>
+			  <select id="whichMass" class="div-flexitem" [formControl]="whichMass"> 
+			  	<option *ngFor="let p of whichMassRadios; let i=index" value="{{ p.value }}" >{{ p.description | translate}}</option> 
+			  </select> 			
+		</div>
+	</div>
+
+	<div *ngIf="isMassEqualToNonAbove()">
+		<div class="form-group row">
+			<div class="col-xl-3 col-md form-inline">
+					<label class="col-form-label mr-2">{{'WASHOUT'| translate}}</label>
+					<label class="form-check-label" *ngFor="let p of priorStudyRadios; let i=index" [ngClass]="{'mr-3': i!=priorStudyRadios.length-1}">
+						<input class="form-check-input" type="radio" name="washout" [checked]="washout.value==p.value" [formControl]="washout" value="{{ p.value }}"> {{ p.description | translate}}
+					</label>
+			</div>
+			<div class="col-xl-4 col-md form-inline">
+					<label class="col-form-label mr-2">{{'CAPSULE' | translate}}</label>
+					<label class="form-check-label" *ngFor="let p of priorStudyRadios; let i=index" [ngClass]="{'mr-3': i!=priorStudyRadios.length-1}">
+						<input class="form-check-input" type="radio" name="capsule" [checked]="capsule.value==p.value" [formControl]="capsule" value="{{ p.value }}"> {{ p.description | translate}}
+					</label>
+			</div>
+			<div class="col-xl-5 form-inline">
+					<label class="col-form-label mr-2">{{'ARTERIAL_PHASE_ENHANCEMENT' | translate}}</label>
+					<label class="form-check-label" *ngFor="let p of arterialPhaseEnhancementRadios; let i=index" [ngClass]="{'mr-3': i!=arterialPhaseEnhancementRadios.length-1}">
+						<input class="form-check-input" type="radio" name="arterialPhaseEnhancement" [checked]="arterialPhaseEnhancement.value==p.value" [formControl]="arterialPhaseEnhancement" value="{{ p.value }}"> {{ p.description | translate}}
+					</label>
+			</div>
+		</div>
+
+		<div class="form-group row" *ngIf="isVisibleThresholdGrowth()">
+			<div class="col-12 form-inline">
+					<label class="col-form-label mr-2">{{'THRESHOLD_GROWTH' | translate}}</label>
+					<p class="form-control-static">{{ thresholdGrowth.toUpperCase() | translate }}</p>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-6 form-inline">
+					<label>{{'ANCILLARY_FEATURES' | translate}}</label>
+			</div>
+			<div class="col-md-6 form-inline">
+					<label><small>{{'ANCILLARY_FEATURES_TIP' | translate }}</small></label>
+			</div>
+		</div>
+		<div class="d-flex flex-wrap ml-5">
+			<label class="form-check-label mr-4" *ngFor="let s of ancillaryFeatures.controls; let i=index" [ngClass]="{
+			'ancillary-features-green': ancillaryFeaturesStyleGreen(ancillaryFeaturesCheckboxs[i]), 
+			'ancillary-features-red': ancillaryFeaturesStyleRed(ancillaryFeaturesCheckboxs[i])}">
+				<input class="form-check-input" type="checkbox" [formControl]="s">{{ ancillaryFeaturesCheckboxs[i].description | translate}}
+			</label>
+		</div>
+		<div class="form-group form-inline ml-5 mt-2">
+			<label class="col-form-label mr-4">{{'T2_SIGNAL' | translate}}</label>
+			<label class="form-check-label mr-4" *ngFor="let p of t2SignalRadios; let i=index" [ngClass]="{
+			'ancillary-features-green': ancillaryFeaturesStyleGreen(t2SignalRadios[i]), 
+			'ancillary-features-red': ancillaryFeaturesStyleRed(t2SignalRadios[i])}">
+				<input class="form-check-input" type="radio" name="t2Signal" [checked]="t2Signal.value==p.value" [formControl]="t2Signal" value="{{ p.value }}" > {{ p.description | translate}}
+			</label>
+		</div>
+
+		<div class="form-group row">
+			<div class="col-lg form-inline">
+					<label class="col-form-label mr-2"><strong>{{'INTIAL_CATEGORY' | translate}}</strong></label>
+					<p class="form-control-static">{{ initialCategory | translate }}</p>
+			</div>
+			<div class="col-lg form-inline" *ngIf="initialCategory != ''">
+					<label class="col-form-label mr-2">{{'SURE_CATEGORY' | translate}}</label>
+					<label class="form-check-label mr-4" *ngFor="let p of priorStudyRadios; let i=index">
+						<input class="form-check-input" type="radio" name="sureOfCategory" [checked]="sureOfCategory.value==p.value" [formControl]="sureOfCategory" value="{{ p.value }}"> {{ p.description | translate}}
+					</label>
+			</div>
+		</div>
+
+		<div *ngIf="isNoSureOfCategory()">
+			<div class="form-group row" >
+				<div class="col-lg form-inline">
+						<label class="col-form-label mr-2">{{'POTENTIAL_ADJUSTED_CATEGORIES' | translate }}</label>
+						<p class="form-control-static">{{ potentialAdjustedCategories }}</p>
+				</div>
+				<div class="col-lg form-inline">
+						<label class="col-form-label mr-2">{{'WOULD_YOU_LIKE_ADJUST_CATEGORY' | translate}}</label>
+						<label class="form-check-label mr-4" *ngFor="let p of priorStudyRadios; let i=index">
+							<input class="form-check-input" type="radio" name="adjustCategory" [checked]="adjustCategory.value==p.value" [formControl]="adjustCategory" value="{{ p.value }}" (change)="onSelectAdjustCategory(p)"> {{ p.description | translate}}
+						</label>
+				</div>
+			</div>
+
+			<div *ngIf="isAdjustedCategory()">
+				<div class="form-group form-inline">
+		  		<label class="col-form-label mr-2">{{'SELECT_ADJUSTED_CATEGORY' | translate}}</label>
+		  		<label class="form-check-label mr-4" *ngFor="let p of potentialAdjustedCategories; let i=index">
+		  			<input class="form-check-input" type="radio" name="selectAdjustedCategory" [checked]="isCheckedSelectAdjustedCategory(p)" [formControl]="selectAdjustedCategory" value="{{ p }}"> {{ p | translate}}
+		  		</label>
+  			</div>
+
+  			<div *ngIf="isSelectAdjustedCategory()">
+  				<div class="form-group row">
+						<div class="col-md form-inline">
+								<label class="col-form-label mr-2">{{'ADJUSTED_CATEGORY' | translate}}</label>
+								<p class="form-control-static">{{ selectAdjustedCategory.value | translate}}</p>
+						</div>
+						<div class="col-md form-inline">
+								<label class="col-form-label mr-2">{{'SURE_CATEGORY' | translate}}</label>
+								<label class="form-check-label mr-4" *ngFor="let p of priorStudyRadios; let i=index">
+									<input class="form-check-input" type="radio" name="sureOfCategorySecond" [checked]="sureOfCategorySecond.value==p.value" [formControl]="sureOfCategorySecond" value="{{ p.value }}"> {{ p.description | translate}}
+								</label>
+						</div>
+					</div>
+
+					<div class="form-group row" *ngIf="isNoSureOfCategorySecond()">
+						<div class="col-xl form-inline">
+								<label class="col-form-label mr-2">{{'POTENTIAL_ADJUSTED_CATEGORY' | translate}}</label>
+								<p class="form-control-static">{{ potentialAdjustedCategorySecond | translate}}</p>
+						</div>
+						<div class="col-xl form-inline">
+								<label class="col-form-label mr-2">{{'WOULD_YOU_LIKE_MAKE_ADJUSTMENT' | translate}}</label>
+								<label class="form-check-label mr-4" *ngFor="let p of priorStudyRadios; let i=index">
+									<input class="form-check-input" type="radio" name="adjustCategorySecond" [checked]="adjustCategorySecond.value==p.value" [formControl]="adjustCategorySecond" value="{{ p.value }}"> {{ p.description | translate}}
+								</label>
+						</div>
+					</div>
+  			</div>
+	  		
+			</div>
+		</div>
+	</div>
+	
+	<div class="form-group form-inline" *ngIf="isFinalCategory">
+		<label class="col-form-label mr-2"><strong>{{'FINAL_CATEGORY' | translate}} </strong></label>
+		<p class="form-control-static">{{ finalCategory | translate}}</p>
+	</div>
+
+	<button type="submit" class="btn" [ngClass]="{'disabled': finalCategory==''}">{{'SUBMIT' | translate }}</button>
+</form>
+
+
+<br />
+<br />
+<hr />
+<h3>the result is: </h3>
+{{ liradsForm.value | json }}
+
+
+
+

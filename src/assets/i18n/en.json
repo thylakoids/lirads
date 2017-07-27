@@ -76,6 +76,8 @@
     "LR5": "LR5 - Treated",
     "OM": "OM - Other Malignancy",
 
-    "INPUT_REQUIRE": "the input is required!!!"
+    "INPUT_REQUIRE": "the input is required!!!",
+
+    "VERSION": "Verion:"
 
 }

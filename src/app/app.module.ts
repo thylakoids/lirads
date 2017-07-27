@@ -11,6 +11,9 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
+import { V2013Component } from './v2013/v2013.component';
+import { V2014Component } from './v2014/v2014.component';
+import { V2017Component } from './v2017/v2017.component';
 
 
 // AoT requires an exported function for factories
@@ -19,9 +22,12 @@ export function createTranslateLoader(http: Http) {
 }
 
 const routes: Routes = [
-{ path: '', redirectTo: 'home', pathMatch: 'full'},
+{ path: '', redirectTo: 'V2013', pathMatch: 'full'},
 { path: 'home', component: HomeComponent },
-{ path: 'about', component: AboutComponent }
+{ path: 'about', component: AboutComponent },
+{ path: 'V2013', component: V2013Component },
+{ path: 'V2014', component: V2014Component },
+{ path: 'V2017', component: V2017Component }
 ];
 
 
@@ -29,7 +35,10 @@ const routes: Routes = [
   declarations: [
   AppComponent,
   HomeComponent,
-  AboutComponent
+  AboutComponent,
+  V2013Component,
+  V2014Component,
+  V2017Component
   ],
   imports: [
   BrowserModule,

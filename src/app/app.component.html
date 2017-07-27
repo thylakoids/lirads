@@ -1,9 +1,16 @@
 	<nav class="navbar navbar-toggleable navbar-inverse bg-inverse fixed-top">
-		<a class="navbar-brand" [routerLink]="['home']">LiRADs</a>
+		<a class="navbar-brand" [routerLink]="['home']">LIRADs</a>
 		<div class="navbar-nav mr-auto">
 			<a class="nav-item nav-link active" [routerLink]="['home']">{{ 'HOME' | translate }}</a>
 			<a class="nav-item nav-link" [routerLink]="['about']">{{ 'ABOUT' | translate }}</a>
 		</div>
+
+		<form class="form-inline text-white mr-4">
+				<label class="mr-2" for="versionSelect">{{'VERSION' | translate}}</label>
+				<select class="bg-inverse text-white" id="versionSelect" #versionSelect (change)="changeVersion(versionSelect.value)"> 
+					<option *ngFor="let v of versions" [value]="v" [selected]="v === currentVersion">{{ v }}</option> 
+				</select>
+		</form>
 
 		<form class="form-inline text-white">
 				<label class="mr-2" for="langSelect">{{ 'LANGUAGE' | translate }}</label>

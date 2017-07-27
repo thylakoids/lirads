@@ -95,7 +95,7 @@ export class RuleServiceV2013Service {
   	return LiradsLevel[level];
   } 
 
-  static calcCWT(washout, capsule, thresholdGrowth): number {
+  static calcCWT(washout: string, capsule: string, thresholdGrowth: string): number {
     let cwt = 0;
     if (washout == YesNo[YesNo.yes]) cwt += 1;
     if (capsule == YesNo[YesNo.yes]) cwt += 1;
@@ -145,10 +145,12 @@ export class AncillaryFeaturesV2013Service {
         pcRed = [LiradsLevel[LiradsLevel.LR1], LiradsLevel[LiradsLevel.LR2]];
         break;
         case LiradsLevel[LiradsLevel.LR4A]:
+        case LiradsLevel[LiradsLevel.LR4B]:
         pcRed = [LiradsLevel[LiradsLevel.LR1], LiradsLevel[LiradsLevel.LR2], LiradsLevel[LiradsLevel.LR3]];
         break; 
         case LiradsLevel[LiradsLevel.LR5A]:
-        pcRed = [LiradsLevel[LiradsLevel.LR1], LiradsLevel[LiradsLevel.LR2], LiradsLevel[LiradsLevel.LR3], LiradsLevel[LiradsLevel.LR4A]];
+        case LiradsLevel[LiradsLevel.LR5B]:
+        pcRed = [LiradsLevel[LiradsLevel.LR1], LiradsLevel[LiradsLevel.LR2], LiradsLevel[LiradsLevel.LR3], LiradsLevel[LiradsLevel.LR4A], LiradsLevel[LiradsLevel.LR4B]];
         break; 
         default:
         break;
@@ -161,7 +163,7 @@ export class AncillaryFeaturesV2013Service {
       let pcGreen = [];
       switch (this.initialCategory) {
         case LiradsLevel[LiradsLevel.LR3]:
-        pcGreen = [LiradsLevel[LiradsLevel.LR4A]];
+        pcGreen = [LiradsLevel[LiradsLevel.LR4A], LiradsLevel[LiradsLevel.LR4B]];
         break;
         case LiradsLevel[LiradsLevel.LR4A]:
         break; 
