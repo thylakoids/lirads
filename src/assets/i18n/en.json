@@ -25,6 +25,7 @@
     "INTIAL_CATEGORY": "Initial Category: ",
     "SURE_CATEGORY": "Sure of category:",
     "POTENTIAL_ADJUSTED_CATEGORIES": "Potential adjusted categories:",
+    "POTENTIAL_ADJUSTED_CATEGORY": "Potential adjusted category:",
     "WOULD_YOU_LIKE_ADJUST_CATEGORY": "Would you like to adjust the category:",
     "SELECT_ADJUSTED_CATEGORY": "Please select adjusted category:",
     "ADJUSTED_CATEGORY": "Adjusted Category: ",
@@ -63,6 +64,17 @@
     "HOMOGENEOUS_MARKED_HYPERINTENSITY": "Homogeneous marked hyperintensity",
     "HOMOGENEOUS_MARKED_HYPOINTENSITY": "Homogeneous marked hypointensity",
     "NONE_OF_THE_ABOVE": "None of the above",
+
+    "LR1": "LR1",
+    "LR2": "LR2",
+    "LR3": "LR3 - Intermediate Probability for HCC",
+    "LR4A": "LR4A - Probably HCC",
+    "LR4B": "LR4B - ",
+    "LR5A": "LR5A - Definitely HCC",
+    "LR5B": "LR5B",
+    "LR5V": "LR5V - Definitely HCC with Tumor in vein",
+    "LR5": "LR5 - Treated",
+    "OM": "OM - Other Malignancy",
 
     "INPUT_REQUIRE": "the input is required!!!"
 

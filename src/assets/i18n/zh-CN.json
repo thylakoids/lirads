@@ -25,6 +25,7 @@
     "INTIAL_CATEGORY": "初始类型: ",
     "SURE_CATEGORY": "确认类型:",
     "POTENTIAL_ADJUSTED_CATEGORIES": "可能调整的类型:",
+    "POTENTIAL_ADJUSTED_CATEGORY": "可能调整的类型:",
     "WOULD_YOU_LIKE_ADJUST_CATEGORY": "您希望调整类型吗:",
     "SELECT_ADJUSTED_CATEGORY": "请选择希望调整的类:",
     "ADJUSTED_CATEGORY": "调整分类: ",

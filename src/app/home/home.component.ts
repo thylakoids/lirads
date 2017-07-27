@@ -1,7 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-
+import { Component, OnInit, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, FormArray, FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
+
+import { ConstantService } from '../service/constant.service';
+import { 
+  RuleServiceV2013Service, 
+  ThresholdGrowthV2013Service, 
+  AncillaryFeaturesV2013Service } from '../service/rule-service-v2013.service';
+import { 
+  LiradsLevel, 
+  YesNo, 
+  Modality, 
+  ObservationType, 
+  WhichMass, 
+  ArterialPhaseEnhancement, 
+  T2Signal, 
+  AncillaryFeaturesColor } from '../service/lirads-level.enum';
 
 @Component({
   selector: 'app-home',
@@ -14,53 +28,25 @@ export class HomeComponent implements OnInit {
   thresholdGrowth: string;
   isFinalCategory: boolean;
   finalCategory: string;
+  potentialAdjustedCategories: string[];
 
-	priorStudyRadios = [
-	{ value: 'yes', description: 'YES'},
-	{ value: 'no',	description: 'NO'}];
-	modalityPriorStudyRadios = [
-	{	value: 'mr',	description: 'MR'	},
-	{	value: 'ct',	description: 'CT'	}];
-	segmentsCheckboxs = [
-	{	description: '1', selected: false	},
-	{	description: '2', selected: false	},
-	{	description: '3', selected: false	},
-	{	description: '4a', selected: false},
-	{	description: '4b', selected: false},
-	{	description: '5', selected: false	},
-	{	description: '6', selected: false	},
-	{	description: '7', selected: false	},
-	{	description: '8', selected: false	}];
-  observationTypeRadios = [
-  {  value: 'mass',  description: 'MASS'  },
-  {  value: 'nonmass',  description: 'NON_MASS'  }];
-  whichMassRadios = [
-  {  value: 'NonHCCMalignancy',  description: 'NON_HCC_MALIGNANCY'  },
-  {  value: 'TumorInVein',  description: 'DEFINITE_TUMOR_IN_VEIN'  },
-  {  value: 'Treated',  description: 'TREATED'  },
-  {  value: 'NoneAbove',  description: 'NONE_ABOVE'  }];
-  arterialPhaseEnhancementRadios = [
-  {  value: 'Hypo',  description: 'HYPO'  },
-  {  value: 'ISO',  description: 'ISO'  },
-  {  value: 'Hyper',  description: 'HYPER'  }];
-  ancillaryFeaturesCheckboxs = [
-  {  description: 'UNDISTORTED_VESSELS', selected: false,  isgreen: true, modality: 'ct' },
-  {  description: 'PARALLELS_BLOOD_POOL_ENHANCEMENT', selected: false, isgreen: true, modality: 'ct' },
-  {  description: 'MOSAIC_ARCHITECTURE', selected: false, isgreen: false, modality: 'ct' },
-  {  description: 'BLODD_PRODUCTS', selected: false, isgreen: false, modality: 'ct' },
-  {  description: 'RESTRICTED_DIFFUSION', selected: false, isgreen: false, modality: 'mr' },
-  {  description: 'INTRALESIONAL_FAT', selected: false, isgreen: false, modality: 'mr' },
-  {  description: 'LESIONAL_IRON_SPARING', selected: false, isgreen: false, modality: 'mr' },
-  {  description: 'LESIONAL_FAT_SPARING', selected: false, isgreen: false, modality: 'mr' }];
-  t2SignalRadios = [
-  {  value: 'MildToModerateHyperintensity',  description: 'MILD_TO_MODERATE_HYPERINTENSITY'  },
-  {  value: 'HomogeneousMarkedHyperintensity',  description: 'HOMOGENEOUS_MARKED_HYPERINTENSITY'  },
-  {  value: 'HomogeneousMarkedHypointensity',  description: 'HOMOGENEOUS_MARKED_HYPOINTENSITY'  },
-  {  value: 'NoneOfTheAbove',  description: 'NONE_OF_THE_ABOVE'  }];
+  priorStudyRadios = ConstantService.priorStudyRadios;
+  modalityPriorStudyRadios = ConstantService.modalityPriorStudyRadios;
+  segmentsCheckboxs = ConstantService.segmentsCheckboxs;
+  observationTypeRadios = ConstantService.observationTypeRadios;
+  whichMassRadios = ConstantService.whichMassRadios;
+  arterialPhaseEnhancementRadios = ConstantService.arterialPhaseEnhancementRadios;
+  ancillaryFeaturesCheckboxs = ConstantService.ancillaryFeaturesCheckboxs;
+  t2SignalRadios = ConstantService.t2SignalRadios;
+
+	
   // isSeenPriorStudyRadios = this.priorStudyRadios.map(item => Object.assign({}, item));
 
-  ancillaryFeaturesStyle(ancillaryFeaturesCheckbox): boolean {
-    return ancillaryFeaturesCheckbox.isgreen;
+  ancillaryFeaturesStyleGreen(ancillaryFeaturesCheckbox): boolean {
+    return ancillaryFeaturesCheckbox['color'] == AncillaryFeaturesColor[AncillaryFeaturesColor.green];
+  }
+  ancillaryFeaturesStyleRed(ancillaryFeaturesCheckbox): boolean {
+    return ancillaryFeaturesCheckbox['color'] == AncillaryFeaturesColor[AncillaryFeaturesColor.red];
   }
 
 
@@ -92,7 +78,7 @@ export class HomeComponent implements OnInit {
       'adjustCategorySecond': ["", Validators.required],
     });
 
-  	this.modalityCurrentStudy = 'MR';
+  	this.modalityCurrentStudy = ConstantService.getDescription(ConstantService.modalityPriorStudyRadios, 'mr');
   	this.patientID = 'XXXXXX';
   }
 
@@ -181,8 +167,8 @@ export class HomeComponent implements OnInit {
   }
 
   onSelectAdjustCategory(p): void {
-    console.log('selected adjusted category: ', p);
-    if (p.value == 'yes') {
+    // console.log('selected adjusted category: ', p);
+    if (p.value == YesNo[YesNo.yes]) {
       this.liradsForm.addControl('selectAdjustedCategory', new FormControl("", Validators.required));
     } else {
       this.liradsForm.removeControl('selectAdjustedCategory');
@@ -201,72 +187,98 @@ export class HomeComponent implements OnInit {
     return this.liradsForm.get('adjustCategorySecond') as AbstractControl;
   }
 
-  // onSelectAdjustCategorySecond(p): void {
-  //   console.log('selected adjusted category second: ', p);
-  // }
-
-  // isNotValid(control: AbstractControl): boolean {
-  //   return !control.valid && control.touched;
-  // }
-
-  // onChangeAncillaryFeatures(p): void {
-  //   console.log('Ancillary features is changed: ', p);
-  // }
-
   setValue(): void {
     const now = new Date();
     this.date.setValue({year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate()});
 
-    // let result = 
-    // { "date": { "year": 2017, "month": 6, "day": 15 }, 
-    // "priorStudy": "yes", 
-    // "modalityPriorStudy": "mr", 
-    // "datePriorStudy": { "year": 2017, "month": 6, "day": 1 }, 
-    // "observationNumber": 1, 
-    // "diameter": 15, 
-    // "segments": [ false, true, true, false, false, false, false, false, false ], 
-    // "isSeenPriorStudy": "yes", 
-    // "diameterPriorStudy": 10, 
-    // "observationType": "mass", 
-    // "whichMass": "NoneAbove", 
-    // "arterialPhaseEnhancement": "Hypo", 
-    // "washout": "yes", 
-    // "capsule": "yes", 
-    // "ancillaryFeatures": [ true, true, false, false, false, false, false, false ], 
-    // "t2Signal": "MildToModerateHyperintensity", 
-    // "sureOfCategory": "yes", 
-    // "adjustCategory": "", 
-    // "sureOfCategorySecond": "", 
-    // "adjustCategorySecond": "" };
-    // this.liradsForm.setValue(result);
+    let result = 
+    { "date": { "year": 2017, "month": 6, "day": 15 }, 
+    "priorStudy": "yes", 
+    "modalityPriorStudy": "mr", 
+    "datePriorStudy": { "year": 2017, "month": 6, "day": 1 }, 
+    "observationNumber": 1, 
+    "diameter": 15, 
+    "segments": [ false, true, true, false, false, false, false, false, false ], 
+    "isSeenPriorStudy": "yes", 
+    "diameterPriorStudy": 10, 
+    "observationType": "mass", 
+    "whichMass": "NoneAbove", 
+    "arterialPhaseEnhancement": "Hypo", 
+    "washout": "yes", 
+    "capsule": "yes", 
+    "ancillaryFeatures": [ true, true, false, false, false, false, false, false ], 
+    "t2Signal": "MildToModerateHyperintensity", 
+    "sureOfCategory": "yes", 
+    "adjustCategory": "", 
+    "sureOfCategorySecond": "", 
+    "adjustCategorySecond": "" };
+    this.liradsForm.setValue(result);
   }
 
-
-
-
   ngOnInit() {
-    this.setValue();
-
     this.priorStudy.valueChanges.subscribe(x => {
-      if (x == 'no') {
-        this.modalityPriorStudy.setValue('');
-        this.datePriorStudy.setValue('');
+      if (x == YesNo[YesNo.no]) {
+        if (this.modalityPriorStudy) this.modalityPriorStudy.setValue('');
+        if (this.datePriorStudy) this.datePriorStudy.setValue('');
       }
     });
 
+    this.sureOfCategorySecond.valueChanges.subscribe(x => {
+      if (x) {
+        if (this.adjustCategorySecond) this.adjustCategorySecond.setValue('');
+      }
+    });
+
+    this.adjustCategory.valueChanges.subscribe(x => {
+      if (x) {
+        if (this.selectAdjustedCategory) this.selectAdjustedCategory.setValue('');
+        if (this.sureOfCategorySecond) this.sureOfCategorySecond.setValue('');
+        if (this.adjustCategorySecond) this.adjustCategorySecond.setValue('');
+      }
+    });
+
+    this.sureOfCategory.valueChanges.subscribe(x => {
+      if (x) {
+        if (this.adjustCategory) this.adjustCategory.setValue('');
+        if (this.selectAdjustedCategory) this.selectAdjustedCategory.setValue('');
+        if (this.sureOfCategorySecond) this.sureOfCategorySecond.setValue('');
+        if (this.adjustCategorySecond) this.adjustCategorySecond.setValue('');
+      }
+    });
+
+    this.observationType.valueChanges.subscribe(x => {
+      if (x) {
+        if (this.whichMass) this.whichMass.setValue('');
+        if (this.washout) this.washout.setValue('');
+        if (this.capsule) this.capsule.setValue('');
+        if (this.arterialPhaseEnhancement) this.arterialPhaseEnhancement.setValue('');
+        if (this.ancillaryFeatures) this.ancillaryFeatures.setValue([false, false, false, false, false, false, false, false]);
+        if (this.t2Signal) this.t2Signal.setValue('');
+        if (this.sureOfCategory) this.sureOfCategory.setValue('');
+
+        if (this.adjustCategory) this.adjustCategory.setValue('');
+        if (this.selectAdjustedCategory) this.selectAdjustedCategory.setValue('');
+        if (this.sureOfCategorySecond) this.sureOfCategorySecond.setValue('');
+        if (this.adjustCategorySecond) this.adjustCategorySecond.setValue('');
+      }
+    });
+
+
     this.liradsForm.valueChanges.subscribe(x => {
+      this.potentialAdjustedCategories = this.calcPotentialAdjustedCategories();
       this.isFinalCategory = this.calcIsFinalCategory();
       this.finalCategory = this.calcFinalCategory();
     });
-    
+
+    this.setValue();
   }
 
   isPriorStudy(): boolean {
-    return this.priorStudy.value == 'yes';
+    return this.priorStudy.value == YesNo[YesNo.yes];
   }
 
   isSeenPriorStudyEqualToYes(): boolean {
-    return this.isSeenPriorStudy.value=='yes';
+    return this.isSeenPriorStudy.value==YesNo[YesNo.yes];
   }
 
   isVisibleThresholdGrowth(): boolean {
@@ -274,35 +286,43 @@ export class HomeComponent implements OnInit {
   }
 
   isObservationTypeEqualToMass(): boolean {
-    return this.observationType.value == 'mass';
+    return this.observationType.value == ObservationType[ObservationType.mass];
   }
 
   isMassEqualToNonAbove(): boolean {
     this.calcThresholdGrowth();
-    return this.observationType.value=='mass' && this.whichMass.value == 'NoneAbove';
+    return this.observationType.value==ObservationType[ObservationType.mass] && this.whichMass.value == WhichMass[WhichMass.NoneAbove];
   }
 
   isNoSureOfCategory(): boolean {
-    return this.sureOfCategory.value == 'no';
+    return this.sureOfCategory.value == YesNo[YesNo.no] && this.potentialAdjustedCategories.length!=0;
   }
 
   isAdjustedCategory(): boolean {
-    return this.adjustCategory.value == 'yes';
+    return this.adjustCategory.value == YesNo[YesNo.yes];
+  }
+
+  isCheckedSelectAdjustedCategory(p: string): boolean {
+    return this.selectAdjustedCategory.value==p;
+  }
+
+  isSelectAdjustedCategory(): boolean {
+    return this.selectAdjustedCategory.value != '';
   }
 
   isNoSureOfCategorySecond(): boolean {
-     return this.sureOfCategorySecond.value == 'no';
+     return this.sureOfCategorySecond.value == YesNo[YesNo.no];
   }
 
   calcIsFinalCategory(): boolean {
     let result = false;
-    if (this.observationType.value=='nonmass' ||
-      this.whichMass.value == 'NonHCCMalignancy' ||
-      this.whichMass.value == 'TumorInVein' ||
-      this.whichMass.value == 'Treated' ||
-      this.sureOfCategory.value == 'yes' ||
-      this.adjustCategory.value == 'no' ||
-      this.sureOfCategorySecond.value == 'yes' ||
+    if (this.observationType.value==ObservationType[ObservationType.nonmass] ||
+      this.whichMass.value == WhichMass[WhichMass.NonHCCMalignancy] ||
+      this.whichMass.value == WhichMass[WhichMass.TumorInVein] ||
+      this.whichMass.value == WhichMass[WhichMass.Treated] ||
+      !this.isNoSureOfCategory() || 
+      this.adjustCategory.value == YesNo[YesNo.no] ||
+      this.sureOfCategorySecond.value == YesNo[YesNo.yes] ||
       this.adjustCategorySecond.value) {
       result = true;
     } else {
@@ -312,36 +332,76 @@ export class HomeComponent implements OnInit {
     return result;
   }
 
+  // rule: threshold growth
+  calcThresholdGrowth(): void {
+    this.thresholdGrowth = new ThresholdGrowthV2013Service(this.priorStudy.value, 
+      this.date.value, this.datePriorStudy.value, 
+      this.diameter.value, this.diameterPriorStudy.value).apply();
+    // console.log(`after calc, this.thresholdGrowth = ${this.thresholdGrowth}`);
+  }
+
+  // rule: lirads Clinical Guide
+  get initialCategory(): string {
+    let result = '';
+    if (this.arterialPhaseEnhancement.value != '' &&
+      this.washout.value != '' &&
+      this.capsule.value != '' && 
+      this.diameter.value != '') {
+      let cwt = RuleServiceV2013Service.calcCWT(this.washout.value, this.capsule.value, this.thresholdGrowth);
+      let atl = this.arterialPhaseEnhancement.value ; 
+      // console.log(`cwt = ${cwt}, atl = ${atl}, diameter = ${this.diameter.value}`);
+      result = new RuleServiceV2013Service(cwt, atl, this.diameter.value).apply();
+    }
+    return result ; 
+  }
+
+  // rule: Based on the above ancillary features,the category can be adjusted to one of the following options
+  calcPotentialAdjustedCategories(): string[] {
+    let result = new AncillaryFeaturesV2013Service(this.translate, this.ancillaryFeatures.value, this.t2Signal.value, this.initialCategory).apply();
+    console.log(`potentialAdjustedCategories = ${result}`);
+    return result;
+  }
+
+  get potentialAdjustedCategoriesDescription(): string[] {
+    let service = new AncillaryFeaturesV2013Service(this.translate, this.ancillaryFeatures.value, this.t2Signal.value, this.initialCategory);
+    return service.description(service.apply());
+  }
+
+  // @todo: Based on tie-breaking rules,the category can be adjusted to the following
+  get potentialAdjustedCategorySecond(): string {
+    return this.selectAdjustedCategory.value;
+  }
+
   // @todo
   calcFinalCategory(): string {
     let result = '';
-    if (this.observationType.value == 'nonmass' ) {
-      result = 'LR3 - Intermediate Probability for HCC';
+    if (this.observationType.value == ObservationType[ObservationType.nonmass] ) {
+      result = LiradsLevel[LiradsLevel.LR3]; 
     } 
-    else if (this.whichMass.value != 'NoneAbove') {
+    else if (this.whichMass.value != WhichMass[WhichMass.NoneAbove]) {
       switch (this.whichMass.value) {
-        case 'NonHCCMalignancy':
-        result = 'OM - Other Malignancy';
+        case WhichMass[WhichMass.NonHCCMalignancy]:
+        result = LiradsLevel[LiradsLevel.OM]; 
         break;
-        case 'TumorInVein':
-        result = 'LR5V - Definitely HCC with Tumor in vein';
+        case WhichMass[WhichMass.TumorInVein]:
+        result = LiradsLevel[LiradsLevel.LR5V]; 
         break;
-        case 'Treated':
-        result = 'LR5 - Treated';
+        case WhichMass[WhichMass.Treated]:
+        result = LiradsLevel[LiradsLevel.LR5]; 
         break;
       }
     } 
-    else if (this.sureOfCategory.value == 'yes' || this.adjustCategory.value == 'no') {
+    else if (!this.isNoSureOfCategory() || this.adjustCategory.value == YesNo[YesNo.no]) {
       result = this.initialCategory;
     } 
-    else if (this.sureOfCategorySecond.value == 'yes') {
+    else if (this.sureOfCategorySecond.value == YesNo[YesNo.yes]) {
       result = this.selectAdjustedCategory.value;
     } else if (this.adjustCategorySecond.value != '') {
       switch (this.adjustCategorySecond.value) {
-        case 'yes':
+        case YesNo[YesNo.yes]:
         result = this.potentialAdjustedCategorySecond;
         break;
-        case 'no':
+        case YesNo[YesNo.no]:
         result = this.selectAdjustedCategory.value;
         break;
       }
@@ -349,34 +409,6 @@ export class HomeComponent implements OnInit {
     }
     // console.log('final category is: ', result);
     return result;
-  }
-
-  // @todo: 
-  calcThresholdGrowth(): void {
-    this.translate.get('YES').subscribe((res: string) => {
-      this.thresholdGrowth = res;
-    });
-  }
-
-  // @todo: lirads Clinical Guide
-  get initialCategory(): string {
-    let result = '';
-    if (this.arterialPhaseEnhancement.value != '' &&
-      this.washout.value != '' &&
-      this.capsule.value != '') {
-      result = 'LR3 - Intermediate Probability for HCC';
-    }
-    return result ; 
-  }
-
-  // @todo: Based on the above ancillary features,the category can be adjusted to one of the following options
-  get potentialAdjustedCategories(): string[] {
-    return ['LR1', 'LR2', 'LR4A'];
-  }
-
-  // @todo: Based on tie-breaking rules,the category can be adjusted to the following
-  get potentialAdjustedCategorySecond(): string {
-    return 'LR3';
   }
 
   onSubmit(value: object) {
