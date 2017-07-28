@@ -5,20 +5,31 @@
 			<a class="nav-item nav-link" [routerLink]="['about']">{{ 'ABOUT' | translate }}</a>
 		</div>
 
-		<form class="form-inline text-white mr-4">
-				<label class="mr-2" for="versionSelect">{{'VERSION' | translate}}</label>
-				<select class="bg-inverse text-white" id="versionSelect" #versionSelect (change)="changeVersion(versionSelect.value)"> 
-					<option *ngFor="let v of versions" [value]="v" [selected]="v === currentVersion">{{ v }}</option> 
-				</select>
-		</form>
+    <div class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{'VERSION' | translate}}</a>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" [routerLink]="['V2013']">V2013</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" [routerLink]="['V2014']">V2014</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" [routerLink]="['V2017']">V2017</a>
+      </div>
+    </div>
 
-		<form class="form-inline text-white">
-				<label class="mr-2" for="langSelect">{{ 'LANGUAGE' | translate }}</label>
-				<select class="bg-inverse text-white" id="langSelect" #langSelect (change)="changeLang(langSelect.value)"> 
-					<option *ngFor="let lang of translate.getLangs()" [value]="lang" [selected]="lang === translate.currentLang">{{ lang }}</option> 
-				</select>
-		</form>
-	</nav>
+<!--     <form class="form-inline text-white mr-4">
+      <label class="mr-2" for="versionSelect">{{'VERSION' | translate}}</label>
+      <select class="bg-inverse text-white" id="versionSelect" #versionSelect (change)="changeVersion(versionSelect.value)"> 
+       <option *ngFor="let v of versions" [value]="v" [selected]="v === currentVersion">{{ v }}</option> 
+     </select>
+   </form> -->
+
+   <form class="form-inline text-white">
+    <label class="mr-2" for="langSelect">{{ 'LANGUAGE' | translate }}</label>
+    <select class="bg-inverse text-white" id="langSelect" #langSelect (change)="changeLang(langSelect.value)"> 
+     <option *ngFor="let lang of translate.getLangs()" [value]="lang" [selected]="lang === translate.currentLang">{{ lang }}</option> 
+   </select>
+ </form>
+</nav>
 
 <div class="container">
 	<router-outlet></router-outlet>

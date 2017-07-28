@@ -104,7 +104,6 @@ export class RuleServiceV2013Service {
   }
 }
 
-
 @Injectable()
 export class AncillaryFeaturesV2013Service {
   private ancillaryFeatures: boolean[];
@@ -136,9 +135,9 @@ export class AncillaryFeaturesV2013Service {
     let colorSet = new Set(colors);
 
     let potentialCategories = [];
-    console.log(`this.initialCategory = ${this.initialCategory}`);
+    // console.log(`this.initialCategory = ${this.initialCategory}`);
     if (colorSet.has(AncillaryFeaturesColor[AncillaryFeaturesColor.green])) {
-      console.log(`colors = ${colors}, has green`);
+      // console.log(`colors = ${colors}, has green`);
       let pcRed = [];
       switch (this.initialCategory) {
         case LiradsLevel[LiradsLevel.LR3]:
@@ -159,7 +158,7 @@ export class AncillaryFeaturesV2013Service {
     } 
 
     if (colorSet.has(AncillaryFeaturesColor[AncillaryFeaturesColor.red])) {
-      console.log(`colors = ${colors}, has red`);
+      // console.log(`colors = ${colors}, has red`);
       let pcGreen = [];
       switch (this.initialCategory) {
         case LiradsLevel[LiradsLevel.LR3]:
@@ -186,5 +185,63 @@ export class AncillaryFeaturesV2013Service {
       result.push(res);
     }));
     return result;
+  }
+}
+
+@Injectable()
+export class TieBreakingV2013Service {
+  private initialCategory: string;
+  private selectAdjustedCategory: string;
+
+
+  
+  constructor(initialCategory: string, selectAdjustedCategory: string) {
+    this.initialCategory = initialCategory;
+    this.selectAdjustedCategory = selectAdjustedCategory;
+  }
+
+  apply(): string {
+    let resultTieBreaking = this.selectAdjustedCategory;
+    if (this.initialCategory.includes(LiradsLevel[LiradsLevel.LR5]))  {
+      if (this.selectAdjustedCategory == LiradsLevel[LiradsLevel.LR1]) {
+        resultTieBreaking = LiradsLevel[LiradsLevel.LR2];
+      }
+      if (this.selectAdjustedCategory == LiradsLevel[LiradsLevel.LR2]) {
+        resultTieBreaking = LiradsLevel[LiradsLevel.LR3];
+      }
+      if (this.selectAdjustedCategory == LiradsLevel[LiradsLevel.LR3]) {
+        resultTieBreaking = LiradsLevel[LiradsLevel.LR3];
+      }
+      if (this.selectAdjustedCategory == LiradsLevel[LiradsLevel.LR4A] || this.selectAdjustedCategory == LiradsLevel[LiradsLevel.LR4B]) {
+        resultTieBreaking = LiradsLevel[LiradsLevel.LR3];
+      }
+    }
+
+    if (this.initialCategory == LiradsLevel[LiradsLevel.LR4A] || this.initialCategory == LiradsLevel[LiradsLevel.LR4B]) {
+      if (this.selectAdjustedCategory == LiradsLevel[LiradsLevel.LR1]) {
+        resultTieBreaking = LiradsLevel[LiradsLevel.LR2];
+      }
+      if (this.selectAdjustedCategory == LiradsLevel[LiradsLevel.LR2]) {
+        resultTieBreaking = LiradsLevel[LiradsLevel.LR3];
+      }
+      if (this.selectAdjustedCategory == LiradsLevel[LiradsLevel.LR3]) {
+        resultTieBreaking = LiradsLevel[LiradsLevel.LR3];
+      }
+      // console.log(`this.initialCategory=${this.initialCategory}, this.selectAdjustedCategory=${this.selectAdjustedCategory}, resultTieBreaking=${resultTieBreaking}`);
+    }
+
+    if (this.initialCategory == LiradsLevel[LiradsLevel.LR3] ) {
+      if (this.selectAdjustedCategory == LiradsLevel[LiradsLevel.LR1]) {
+        resultTieBreaking = LiradsLevel[LiradsLevel.LR2];
+      }
+      if (this.selectAdjustedCategory == LiradsLevel[LiradsLevel.LR2]) {
+        resultTieBreaking = LiradsLevel[LiradsLevel.LR3];
+      }
+      if (this.selectAdjustedCategory == LiradsLevel[LiradsLevel.LR4A] || this.selectAdjustedCategory == LiradsLevel[LiradsLevel.LR4B]) {
+        resultTieBreaking = LiradsLevel[LiradsLevel.LR3];
+      }
+    }
+
+    return resultTieBreaking;
   }
 }

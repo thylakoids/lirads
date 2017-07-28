@@ -23,7 +23,7 @@ export function createTranslateLoader(http: Http) {
 
 const routes: Routes = [
 { path: '', redirectTo: 'V2013', pathMatch: 'full'},
-{ path: 'home', component: HomeComponent },
+{ path: 'home', component: V2013Component },
 { path: 'about', component: AboutComponent },
 { path: 'V2013', component: V2013Component },
 { path: 'V2014', component: V2014Component },

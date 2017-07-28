@@ -6,7 +6,8 @@ import { ConstantService } from '../service/constant.service';
 import { 
   RuleServiceV2013Service, 
   ThresholdGrowthV2013Service, 
-  AncillaryFeaturesV2013Service } from '../service/rule-service-v2013.service';
+  AncillaryFeaturesV2013Service,
+  TieBreakingV2013Service } from '../service/rule-service-v2013.service';
 import { 
   LiradsLevel, 
   YesNo, 
@@ -358,7 +359,7 @@ export class V2013Component implements OnInit {
   // rule: Based on the above ancillary features,the category can be adjusted to one of the following options
   calcPotentialAdjustedCategories(): string[] {
     let result = new AncillaryFeaturesV2013Service(this.translate, this.ancillaryFeatures.value, this.t2Signal.value, this.initialCategory).apply();
-    console.log(`potentialAdjustedCategories = ${result}`);
+    // console.log(`potentialAdjustedCategories = ${result}`);
     return result;
   }
 
@@ -369,10 +370,10 @@ export class V2013Component implements OnInit {
 
   // @todo: Based on tie-breaking rules,the category can be adjusted to the following
   get potentialAdjustedCategorySecond(): string {
-    return this.selectAdjustedCategory.value;
+    return new TieBreakingV2013Service(this.initialCategory, this.selectAdjustedCategory.value).apply();
   }
 
-  // @todo
+  // rule:
   calcFinalCategory(): string {
     let result = '';
     if (this.observationType.value == ObservationType[ObservationType.nonmass] ) {

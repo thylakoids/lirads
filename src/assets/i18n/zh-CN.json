@@ -65,7 +65,21 @@
     "HOMOGENEOUS_MARKED_HYPOINTENSITY": "均匀明显低信号",
     "NONE_OF_THE_ABOVE": "以上都不是",
 
-    "INPUT_REQUIRE": "需要输入!!!",
+    "LR1": "LR1",
+    "LR2": "LR2",
+    "LR3": "LR3 - Intermediate Probability for HCC",
+    "LR4A": "LR4A - Probably HCC",
+    "LR4B": "LR4B",
+    "LR5A": "LR5A - Definitely HCC",
+    "LR5B": "LR5B",
+    "LR5V": "LR5V - Definitely HCC with Tumor in vein",
+    "LR5": "LR5 - Treated",
+    "OM": "OM - Other Malignancy",
 
-    "VERSION": "版本:"
+    "INPUT_REQUIRE": "需要输入!!!",
+    "CLINICAL_GUIDE": "基于临床指南计算出来的",
+    "ADJUSTED_BY_ANCILLARY_FEATURE": "基于辅助特征计算出来的",
+    "TIE_BREAKING": "基于tie-breaking计算出来的",
+
+    "VERSION": "版本"
 }
