@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ConstantService } from '../service/constant.service';
-import { LiradsLevel, YesNo, ArterialPhaseEnhancement, AncillaryFeaturesColor } from './lirads-level.enum';
+import { LiradsLevel, YesNo, ArterialPhaseEnhancement, AncillaryFeaturesColor, ObservationType, WhichMass } from './lirads-level.enum';
 import { DateInterface } from './date-interface';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -101,6 +101,28 @@ export class RuleServiceV2013Service {
     if (capsule == YesNo[YesNo.yes]) cwt += 1;
     if (thresholdGrowth == YesNo[YesNo.yes]) cwt += 1;
     return cwt;
+  }
+
+  static ruleByObservationTypeAndWhichMass(observationType: string, whichMass: string): string {
+    let result = '';
+    if (observationType == ObservationType[ObservationType.nonmass] ) {
+      result = LiradsLevel[LiradsLevel.LR3]; 
+    } 
+    else if (whichMass != WhichMass[WhichMass.NoneAbove]) {
+      switch (whichMass) {
+        case WhichMass[WhichMass.NonHCCMalignancy]:
+        result = LiradsLevel[LiradsLevel.OM]; 
+        break;
+        case WhichMass[WhichMass.TumorInVein]:
+        result = LiradsLevel[LiradsLevel.LR5V]; 
+        break;
+        case WhichMass[WhichMass.Treated]:
+        result = LiradsLevel[LiradsLevel.LR5]; 
+        break;
+      }
+    } 
+
+    return result;
   }
 }
 

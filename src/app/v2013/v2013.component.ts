@@ -227,6 +227,8 @@ export class V2013Component implements OnInit {
       }
     });
 
+    // if previous is the condition, reset the following
+    //--------------------------------------------------------------------
     this.sureOfCategorySecond.valueChanges.subscribe(x => {
       if (x) {
         if (this.adjustCategorySecond) this.adjustCategorySecond.setValue('');
@@ -266,6 +268,7 @@ export class V2013Component implements OnInit {
         if (this.adjustCategorySecond) this.adjustCategorySecond.setValue('');
       }
     });
+    //----------------------------------------------------------------------
 
 
     this.liradsForm.valueChanges.subscribe(x => {
@@ -273,6 +276,15 @@ export class V2013Component implements OnInit {
       this.isFinalCategory = this.calcIsFinalCategory();
       this.finalCategory = this.calcFinalCategory();
       this.maxDatePriorStudy = this.date.value;
+
+      // if selectAdjustedCategory is LR4 in previos time, then feature is changed, potentialAdjustedCategories has not LR4 anymore, reset 
+      if (this.potentialAdjustedCategories && this.potentialAdjustedCategories.length>0 && 
+        this.selectAdjustedCategory && this.selectAdjustedCategory.value &&
+        !this.potentialAdjustedCategories.includes(this.selectAdjustedCategory.value)) {
+        if (this.selectAdjustedCategory) this.selectAdjustedCategory.setValue('');
+        if (this.sureOfCategorySecond) this.sureOfCategorySecond.setValue('');
+        if (this.adjustCategorySecond) this.adjustCategorySecond.setValue('');
+      }
     });
 
     this.setValue();
