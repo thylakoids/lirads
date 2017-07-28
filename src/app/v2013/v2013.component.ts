@@ -337,7 +337,8 @@ export class V2013Component implements OnInit {
       this.whichMass.value == WhichMass[WhichMass.NonHCCMalignancy] ||
       this.whichMass.value == WhichMass[WhichMass.TumorInVein] ||
       this.whichMass.value == WhichMass[WhichMass.Treated] ||
-      !this.isNoSureOfCategory() || 
+      this.sureOfCategory.value == YesNo[YesNo.yes] || 
+      (this.sureOfCategory.value == YesNo[YesNo.no] && this.potentialAdjustedCategories.length==0) ||
       this.adjustCategory.value == YesNo[YesNo.no] ||
       this.sureOfCategorySecond.value == YesNo[YesNo.yes] ||
       this.adjustCategorySecond.value) {
