@@ -1,6 +1,7 @@
 import { Component, OnInit, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, FormArray, FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
+import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
 import { ConstantService } from '../service/constant.service';
 import { 
@@ -30,6 +31,7 @@ export class V2013Component implements OnInit {
   isFinalCategory: boolean;
   finalCategory: string;
   potentialAdjustedCategories: string[];
+  private maxDatePriorStudy: NgbDateStruct;
 
   priorStudyRadios = ConstantService.priorStudyRadios;
   modalityPriorStudyRadios = ConstantService.modalityPriorStudyRadios;
@@ -188,6 +190,7 @@ export class V2013Component implements OnInit {
     return this.liradsForm.get('adjustCategorySecond') as AbstractControl;
   }
 
+  
   setValue(): void {
     const now = new Date();
     this.date.setValue({year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate()});
@@ -269,6 +272,7 @@ export class V2013Component implements OnInit {
       this.potentialAdjustedCategories = this.calcPotentialAdjustedCategories();
       this.isFinalCategory = this.calcIsFinalCategory();
       this.finalCategory = this.calcFinalCategory();
+      this.maxDatePriorStudy = this.date.value;
     });
 
     this.setValue();
