@@ -2,6 +2,11 @@ import { Component, OnInit, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, FormArray, FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import {Http, Response,RequestOptions,Headers} from '@angular/http';
+import {Observable} from 'rxjs/Rx';
+import { Injectable } from '@angular/core';
+
+
 
 import { ConstantService } from '../service/constant.service';
 import { 
@@ -24,7 +29,10 @@ import {
   templateUrl: './v2013.component.html',
   styleUrls: ['./v2013.component.css']
 })
+@Injectable()
 export class V2013Component implements OnInit {
+
+
 	modalityCurrentStudy: string;
 	patientID: string;
   thresholdGrowth: string;
@@ -55,7 +63,7 @@ export class V2013Component implements OnInit {
 
   liradsForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private translate: TranslateService) { 
+  constructor(private fb: FormBuilder, private translate: TranslateService,private http:Http) { 
   	console.clear();
   	
   	this.liradsForm = fb.group({
@@ -429,7 +437,23 @@ export class V2013Component implements OnInit {
     return result;
   }
 
+//http 
+  flaskdata:object;
+  makeget():void{
+    this.http.get('/test')
+    .subscribe((res:Response)=>{
+      this.flaskdata=res.json();
+    });
+  }
+  makepost(data):void{
+    this.http.post('/test',JSON.stringify(data))
+    .subscribe((res:Response)=>{
+      this.flaskdata=res.json();
+    });
+  }
   onSubmit(value: object) {
+    this.makepost(value);
     console.log('form value: ', value);
+    console.log('post value: ', this.flaskdata);
   }
 }
