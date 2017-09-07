@@ -2,9 +2,10 @@ import { Component, OnInit, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, FormArray, FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
-import {Http, Response,RequestOptions,Headers} from '@angular/http';
+import {Http, Response,RequestOptions,Headers} from '@angular/http';//http
 import {Observable} from 'rxjs/Rx';
 import { Injectable } from '@angular/core';
+import {enable,destroy} from 'splash-screen';//loader
 
 
 
@@ -440,30 +441,24 @@ export class V2013Component implements OnInit {
 
 
 //http 
-  flaskdata:object;
   loading:boolean;
-  makeget():void{
-    this.http.get('/test')
-    .subscribe((res:Response)=>{
-      this.flaskdata=res.json();
-    });
-  }
   makepost(data):void{
+    enable('circular');//Possible themes are: 'tailing', 'audio-wave', 'windcatcher', 'spinner-section', 'spinner-section-far', 'circular'.
     this.loading=true;
     this.http.post('/test',JSON.stringify(data))
     .subscribe(
       (res:Response)=>{
-        this.flaskdata=res.json();
         this.liradsForm.setValue(res.json());
-        this.loading=false;
         console.log('post value: ', res.json());
       },
       (error:any)=>{
         this.loading=false;
+        destroy();
         console.log('err');
       },
       ()=>{
         this.loading=false;
+        destroy();
       },
     );
     
