@@ -224,7 +224,7 @@ export class V2013Component implements OnInit {
     "adjustCategory": "", 
     "sureOfCategorySecond": "", 
     "adjustCategorySecond": "" };
-    this.liradsForm.setValue(result);
+    //this.liradsForm.setValue(result);
   }
 
   ngOnInit() {
@@ -436,9 +436,12 @@ export class V2013Component implements OnInit {
     // console.log('final category is: ', result);
     return result;
   }
+//========================liyulong==============
+
 
 //http 
   flaskdata:object;
+  loading:boolean;
   makeget():void{
     this.http.get('/test')
     .subscribe((res:Response)=>{
@@ -446,14 +449,26 @@ export class V2013Component implements OnInit {
     });
   }
   makepost(data):void{
+    this.loading=true;
     this.http.post('/test',JSON.stringify(data))
-    .subscribe((res:Response)=>{
-      this.flaskdata=res.json();
-    });
+    .subscribe(
+      (res:Response)=>{
+        this.flaskdata=res.json();
+        this.liradsForm.setValue(res.json());
+        this.loading=false;
+        console.log('post value: ', res.json());
+      },
+      (error:any)=>{
+        this.loading=false;
+        console.log('err');
+      },
+      ()=>{
+        this.loading=false;
+      },
+    );
+    
   }
   onSubmit(value: object) {
     this.makepost(value);
-    console.log('form value: ', value);
-    console.log('post value: ', this.flaskdata);
   }
 }
