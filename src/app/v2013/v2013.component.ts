@@ -442,8 +442,9 @@ export class V2013Component implements OnInit {
 
 //http 
   loading:boolean;
+  LoaderStyle:any[]=['tailing','audio-wave','windcatcher','spinner-section','spinner-section-far','circular'];
   makepost(data):void{
-    enable('circular');//Possible themes are: 'tailing', 'audio-wave', 'windcatcher', 'spinner-section', 'spinner-section-far', 'circular'.
+    enable(this.LoaderStyle[Math.floor(Math.random()*6)]);//Possible themes are: 'tailing', 'audio-wave', 'windcatcher', 'spinner-section', 'spinner-section-far', 'circular'.
     this.loading=true;
     this.http.post('/test',JSON.stringify(data))
     .subscribe(
@@ -452,8 +453,8 @@ export class V2013Component implements OnInit {
         console.log('post value: ', res.json());
       },
       (error:any)=>{
-        this.loading=false;
-        destroy();
+        // this.loading=false;
+        // destroy();
         console.log('err');
       },
       ()=>{
