@@ -43,10 +43,14 @@ def test():
         print 'POST'
         print data
 
-        result=MRFeatures.getresult()
-        formdata['washout']=result['washout'];
-        formdata['capsule']=result['capsule'];
-        formdata['arterialPhaseEnhancement']=result['arterialPhaseEnhancement'];
+        # result=MRFeatures.getresult()
+        # formdata['washout']=result['washout']
+        # formdata['capsule']=result['capsule']
+        # formdata['arterialPhaseEnhancement']=result['arterialPhaseEnhancement']
+        formdata['washout']='no'
+        formdata['capsule']='no'
+        formdata['arterialPhaseEnhancement']='Hyper'
+        time.sleep(10)
         print formdata
         return jsonify(formdata)
     else:

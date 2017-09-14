@@ -217,18 +217,27 @@
 		<label class="col-form-label mr-2"><strong>{{'FINAL_CATEGORY' | translate}} </strong></label>
 		<p class="form-control-static">{{ finalCategory | translate}}</p>
 	</div>
-
-	<button type="submit" class="btn" [ngClass]="{'disabled': finalCategory==''}">{{'SUBMIT' | translate }}</button>
+	<!-- add loading here liyulong -->
+	<button type="submit" class="btn" [ngClass]="{'disabled': finalCategory==''||loading}">{{'SUBMIT' | translate }}</button> 
+	<div class="ui icon message" *ngIf="loading">
+	  <i class="notched circle loading icon"></i>
+	  <div class="content">
+	    <div class="header">
+	      Just one second
+	    </div>
+	    <p>We're fetching that content for you.</p>
+	  </div>
+	</div>
 </form>
 
 
 <br />
 <br />
 <hr />
-<h3 *ngIf="loading">loading...</h3>
 <h3>the result is: </h3>
 {{ liradsForm.value | json }}
-{{flaskdata|json}}
+<h3>post data is:</h3>
+{{ flaskdata | json }}
 
 
 
