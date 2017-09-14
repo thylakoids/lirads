@@ -92,6 +92,7 @@ export class V2013Component implements OnInit {
 
   	this.modalityCurrentStudy = ConstantService.getDescription(ConstantService.modalityPriorStudyRadios, 'mr');
   	this.patientID = 'XXXXXX';
+        this.onSubmit(this.liradsForm.value); // auto submmit
   }
 
   get date(): AbstractControl {
