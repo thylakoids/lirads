@@ -514,6 +514,5 @@ export class V2013Component implements OnInit {
   onSubmit(value: object) {
     if (!this.loading){
       this.makepost(value);}
-    // this.setFormValue();
   }
 }
