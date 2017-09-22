@@ -28,7 +28,7 @@ import {
 @Component({
   selector: 'app-v2013',
   templateUrl: './v2013.component.html',
-  styleUrls: ['./v2013.component.css']
+  styleUrls: ['./v2013.component.css','../../../node_modules/semantic-ui-icon/icon.min.css','../../../node_modules/semantic-ui-message/message.min.css']
 })
 @Injectable()
 export class V2013Component implements OnInit, AfterViewInit  {
@@ -298,7 +298,7 @@ export class V2013Component implements OnInit, AfterViewInit  {
     // this.setValue(); liyulong
   }
   ngAfterViewInit(){
-    this.liradsForm.disable();
+    this.onSubmit(this.liradsForm.value)
     console.log('AfterViewInit')
   }
 
