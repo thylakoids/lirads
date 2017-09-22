@@ -50,7 +50,7 @@ def test():
         formdata['washout']='no'
         formdata['capsule']='no'
         formdata['arterialPhaseEnhancement']='Hyper'
-        time.sleep(10)
+        time.sleep(20)
         print formdata
         return jsonify(formdata)
     else:

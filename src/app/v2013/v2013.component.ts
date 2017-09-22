@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges } from '@angular/core';
+import { Component, OnInit ,AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, FormArray, FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
@@ -31,7 +31,7 @@ import {
   styleUrls: ['./v2013.component.css']
 })
 @Injectable()
-export class V2013Component implements OnInit {
+export class V2013Component implements OnInit, AfterViewInit  {
 
 
   modalityCurrentStudy: string;
@@ -69,7 +69,7 @@ export class V2013Component implements OnInit {
   	
   	this.liradsForm = fb.group({
       'date': ["", Validators.required],
-      'priorStudy': ["", Validators.required],
+      'priorStudy': [{value:"",disable:true},Validators.required],
       'modalityPriorStudy': ["", Validators.required],
       'datePriorStudy': ["", Validators.required],
       'observationNumber': ['', Validators.required],
@@ -92,7 +92,6 @@ export class V2013Component implements OnInit {
 
   	this.modalityCurrentStudy = ConstantService.getDescription(ConstantService.modalityPriorStudyRadios, 'mr');
   	this.patientID = 'XXXXXX';
-        this.onSubmit(this.liradsForm.value); // auto submmit
   }
 
   get date(): AbstractControl {
@@ -226,7 +225,7 @@ export class V2013Component implements OnInit {
     "adjustCategory": "", 
     "sureOfCategorySecond": "", 
     "adjustCategorySecond": "" };
-     // this.liradsForm.setValue(result);
+    this.liradsForm.setValue(result);
   }
 
   ngOnInit() {
@@ -296,9 +295,13 @@ export class V2013Component implements OnInit {
         if (this.adjustCategorySecond) this.adjustCategorySecond.setValue('');
       }
     });
-
-    this.setValue();
+    // this.setValue(); liyulong
   }
+  ngAfterViewInit(){
+    this.liradsForm.disable();
+    console.log('AfterViewInit')
+  }
+
 
   isPriorStudy(): boolean {
     return this.priorStudy.value == YesNo[YesNo.yes];
@@ -457,32 +460,6 @@ export class V2013Component implements OnInit {
   }
 
   setFormValue():void{
-    // let result = 
-    // { "date": { "year": 2017, "month": 6, "day": 15 }, 
-    // "priorStudy": "yes", 
-    // "modalityPriorStudy": "mr", 
-    // "datePriorStudy": { "year": 2017, "month": 6, "day": 1 }, 
-    // "observationNumber": 1, 
-    // "diameter": 15, 
-    // "segments": [ false, true, true, false, false, false, false, false, false ], 
-    // "isSeenPriorStudy": "yes", 
-    // "diameterPriorStudy": 10, 
-    // "observationType": "mass", 
-    // "whichMass": "NoneAbove", 
-    // "arterialPhaseEnhancement": "ISO", 
-    // "washout": "yes", 
-    // "capsule": "yes", 
-    // "ancillaryFeatures": [ true, true, false, false, false, false, false, false ], 
-    // "t2Signal": "MildToModerateHyperintensity", 
-    // "sureOfCategory": "yes", 
-    // "adjustCategory": "", 
-    // "sureOfCategorySecond": "", 
-    // "adjustCategorySecond": "" };
-    // this.liradsForm.setValue(result);
-
-     // this.liradsForm.setValue(this.flaskdata);   //some value can't be filled correctly due to the wrong older
-
-    // the order matters
     let valueKey:string[]=["date","priorStudy","modalityPriorStudy","datePriorStudy","observationNumber",
       "diameter","segments","isSeenPriorStudy","diameterPriorStudy","observationType","whichMass",
       "arterialPhaseEnhancement","washout","capsule","ancillaryFeatures","t2Signal","sureOfCategory",
