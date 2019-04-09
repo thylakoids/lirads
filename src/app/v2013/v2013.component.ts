@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges } from '@angular/core';
+import { Component, OnInit ,AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, FormArray, FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
@@ -28,14 +28,14 @@ import {
 @Component({
   selector: 'app-v2013',
   templateUrl: './v2013.component.html',
-  styleUrls: ['./v2013.component.css']
+  styleUrls: ['./v2013.component.css','../../../node_modules/semantic-ui-icon/icon.min.css','../../../node_modules/semantic-ui-message/message.min.css']
 })
 @Injectable()
-export class V2013Component implements OnInit {
+export class V2013Component implements OnInit, AfterViewInit  {
 
 
-	modalityCurrentStudy: string;
-	patientID: string;
+  modalityCurrentStudy: string;
+  patientID: string;
   thresholdGrowth: string;
   isFinalCategory: boolean;
   finalCategory: string;
@@ -69,7 +69,7 @@ export class V2013Component implements OnInit {
   	
   	this.liradsForm = fb.group({
       'date': ["", Validators.required],
-      'priorStudy': ["", Validators.required],
+      'priorStudy': [{value:"",disable:true},Validators.required],
       'modalityPriorStudy': ["", Validators.required],
       'datePriorStudy': ["", Validators.required],
       'observationNumber': ['', Validators.required],
@@ -216,7 +216,7 @@ export class V2013Component implements OnInit {
     "diameterPriorStudy": 10, 
     "observationType": "mass", 
     "whichMass": "NoneAbove", 
-    "arterialPhaseEnhancement": "Hypo", 
+    "arterialPhaseEnhancement": "ISO", 
     "washout": "yes", 
     "capsule": "yes", 
     "ancillaryFeatures": [ true, true, false, false, false, false, false, false ], 
@@ -225,7 +225,7 @@ export class V2013Component implements OnInit {
     "adjustCategory": "", 
     "sureOfCategorySecond": "", 
     "adjustCategorySecond": "" };
-    //this.liradsForm.setValue(result);
+    this.liradsForm.setValue(result);
   }
 
   ngOnInit() {
@@ -295,9 +295,13 @@ export class V2013Component implements OnInit {
         if (this.adjustCategorySecond) this.adjustCategorySecond.setValue('');
       }
     });
-
-    this.setValue();
+    // this.setValue(); liyulong
   }
+  ngAfterViewInit(){
+    this.onSubmit(this.liradsForm.value)
+    console.log('AfterViewInit')
+  }
+
 
   isPriorStudy(): boolean {
     return this.priorStudy.value == YesNo[YesNo.yes];
@@ -441,30 +445,51 @@ export class V2013Component implements OnInit {
 
 
 //http 
-  loading:boolean;
   LoaderStyle:any[]=['tailing','audio-wave','windcatcher','spinner-section','spinner-section-far','circular'];
-  makepost(data):void{
-    enable(this.LoaderStyle[Math.floor(Math.random()*6)]);//Possible themes are: 'tailing', 'audio-wave', 'windcatcher', 'spinner-section', 'spinner-section-far', 'circular'.
+  loading:boolean;
+  flaskdata:object;  //save the post data
+  loadingTrue():void{
     this.loading=true;
-    this.http.post('/test',JSON.stringify(data))
+    this.liradsForm.disable();
+    // enable(this.LoaderStyle[Math.floor(Math.random()*6)]);//Possible themes are: 'tailing', 'audio-wave', 'windcatcher', 'spinner-section', 'spinner-section-far', 'circular'.
+  }
+  loadingFalse():void{
+    this.loading=false;
+    this.liradsForm.enable();
+    // destroy();
+  }
+
+  setFormValue():void{
+    let valueKey:string[]=["date","priorStudy","modalityPriorStudy","datePriorStudy","observationNumber",
+      "diameter","segments","isSeenPriorStudy","diameterPriorStudy","observationType","whichMass",
+      "arterialPhaseEnhancement","washout","capsule","ancillaryFeatures","t2Signal","sureOfCategory",
+      "adjustCategory","sureOfCategorySecond","adjustCategorySecond"];
+    for(let i=0;i<valueKey.length;i++)
+    {this.liradsForm.controls[valueKey[i]].setValue(this.flaskdata[valueKey[i]]);}
+  }
+  
+  makepost(data:object):void{
+    this.loadingTrue();
+    // this.http.post('http://jsonplaceholder.typicode.com/posts',JSON.stringify(data)) //for test
+    this.http.post('/test',JSON.stringify(data)) //for flask
     .subscribe(
       (res:Response)=>{
-        this.liradsForm.setValue(res.json());
-        console.log('post value: ', res.json());
+        console.log('success');
+        this.flaskdata=res.json();
       },
       (error:any)=>{
-        // this.loading=false;
-        // destroy();
-        console.log('err');
+        console.log('error');
+        this.loadingFalse();
       },
       ()=>{
-        this.loading=false;
-        destroy();
+        console.log('finial');
+        this.loadingFalse();
+        this.setFormValue();
       },
     );
-    
   }
   onSubmit(value: object) {
-    this.makepost(value);
+    if (!this.loading){
+      this.makepost(value);}
   }
 }
