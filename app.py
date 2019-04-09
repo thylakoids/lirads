@@ -43,14 +43,14 @@ def test():
         print 'POST'
         print data
 
-        # result=MRFeatures.getresult()
-        # formdata['washout']=result['washout']
-        # formdata['capsule']=result['capsule']
-        # formdata['arterialPhaseEnhancement']=result['arterialPhaseEnhancement']
-        formdata['washout']='no'
-        formdata['capsule']='no'
-        formdata['arterialPhaseEnhancement']='Hyper'
-        time.sleep(20)
+        result=MRFeatures.getresult()
+        formdata['washout']=result['washout']
+        formdata['capsule']=result['capsule']
+        formdata['arterialPhaseEnhancement']=result['arterialPhaseEnhancement']
+        # formdata['washout']='no'
+        # formdata['capsule']='no'
+        # formdata['arterialPhaseEnhancement']='Hyper'
+        # time.sleep(20)
         print formdata
         return jsonify(formdata)
     else:
@@ -58,4 +58,4 @@ def test():
         return jsonify({'flaskdata':'GET!'})
 
 if __name__=='__main__':
-	app.run(debug=True)
+	app.run(debug=True,threaded=True,port=4201)
